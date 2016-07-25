@@ -1,26 +1,32 @@
 # ex: syntax=puppet si sw=2 ts=2 et
 class terraform (
-  $version = '0.6.11',
+  $version,
+  $base_url = 'https://releases.hashicorp.com/terraform',
+  $target_dir = '/usr/local/bin',
+  $bin_name = 'terraform',
 ) {
 
-  $_os = $::kernel ? {
-    'Linux' => 'linux',
-    'FreeBSD' => 'freebsd',
-    'OpenBSD' => 'openbsd',
+  case $::kernel {
+    'Linux': { $_os = 'linux' }
+    'FreeBSD': { $_os ='freebsd' }
+    'OpenBSD': { $_os = 'openbsd' }
+    'Darwin': { $_os = 'darwin' }
+    default: { fail("Unknown kernel ${::kernel}") }
   }
 
-  $_arch = $::architecture ? {
-    'amd64' => 'amd64',
-    'x86_64' => 'amd64',
-    'i386' => '386',
-    'i486' => '386',
-    'i586' => '386',
-    'x86' => '386',
+  case $::architecture {
+    'amd64', 'x86_64': { $_arch = 'amd64' }
+    'i386', 'i486', 'i586', 'x86': { $_arch = '386' }
+    default: { fail("Unknown architecture: ${::architecture}") }
   }
 
-  staging::deploy { "terraform_${version}_${_os}_${_arch}.zip":
-    source  => "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${_os}_${_arch}.zip",
-    target  => '/usr/local/bin',
-    creates => '/usr/local/bin/terraform',
+  $archive_filename = "terraform_${version}_${_os}_${_arch}.zip"
+  archive{ $archive_filename:
+    ensure       => present,
+    extract      => true,
+    extract_path => $target_dir,
+    source       => "${base_url}/${version}/${archive_filename}",
+    creates      => "${target_dir}/${bin_name}",
   }
+
 }
