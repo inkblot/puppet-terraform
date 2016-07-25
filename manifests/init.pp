@@ -21,7 +21,7 @@ class terraform (
   }
 
   $archive_filename = "terraform_${version}_${_os}_${_arch}.zip"
-  archive{ $archive_filename:
+  archive{ "/tmp/${archive_filename}":
     ensure       => present,
     extract      => true,
     extract_path => $target_dir,
