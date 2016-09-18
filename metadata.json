@@ -39,6 +39,6 @@
     }
   ],
   "dependencies": [
-    { "name": "nanliu/staging" }
+    { "name": "puppet/archive" }
   ]
 }
