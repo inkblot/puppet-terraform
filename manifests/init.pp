@@ -4,6 +4,7 @@ class terraform (
   $base_url = 'https://releases.hashicorp.com/terraform',
   $target_dir = '/usr/local/bin',
   $bin_name = 'terraform',
+  $tmp_dir = '/tmp'
 ) {
 
   case $::kernel {
@@ -21,12 +22,22 @@ class terraform (
   }
 
   $archive_filename = "terraform_${version}_${_os}_${_arch}.zip"
-  archive{ "/tmp/${archive_filename}":
+  archive { "${tmp_dir}/${archive_filename}":
     ensure       => present,
     extract      => true,
-    extract_path => $target_dir,
+    extract_path => $tmp_dir,
     source       => "${base_url}/${version}/${archive_filename}",
-    creates      => "${target_dir}/${bin_name}",
+    creates      => "${target_dir}/${bin_name}-${version}",
   }
 
+  exec { '/usr/local/bin/terraform-version':
+    command     => "mv ${tmp_dir}/${bin_name} ${target_dir}/${bin_name}-${version}",
+    subscribe   => Archive["${tmp_dir}/${archive_filename}"],
+    refreshonly => true,
+  }
+
+  file { "${target_dir}/${bin_name}":
+    ensure => link,
+    target => "${target_dir}/${bin_name}-${version}",
+  }
 }
