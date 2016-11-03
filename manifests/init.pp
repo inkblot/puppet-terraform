@@ -4,6 +4,8 @@ class terraform (
   $base_url = 'https://releases.hashicorp.com/terraform',
   $target_dir = '/usr/local/bin',
   $bin_name = 'terraform',
+  $checksum_type = undef,
+  $checksum = undef
 ) {
 
   case $::kernel {
@@ -23,6 +25,8 @@ class terraform (
   $archive_filename = "terraform_${version}_${_os}_${_arch}.zip"
   archive{ "/tmp/${archive_filename}":
     ensure       => present,
+    checksum     => $checksum,
+    checksum_type => $checksum_type,
     extract      => true,
     extract_path => $target_dir,
     source       => "${base_url}/${version}/${archive_filename}",
