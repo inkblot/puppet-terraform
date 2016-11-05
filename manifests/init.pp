@@ -1,12 +1,12 @@
 # ex: syntax=puppet si sw=2 ts=2 et
 class terraform (
   $version,
-  $base_url = 'https://releases.hashicorp.com/terraform',
-  $target_dir = '/usr/local/bin',
-  $bin_name = 'terraform',
-  $tmp_dir = '/tmp',
+  $base_url      = 'https://releases.hashicorp.com/terraform',
+  $target_dir    = '/usr/local/bin',
+  $bin_name      = 'terraform',
+  $tmp_dir       = '/tmp',
   $checksum_type = undef,
-  $checksum = undef
+  $checksum      = undef
 ) {
 
   case $::kernel {
@@ -25,13 +25,13 @@ class terraform (
 
   $archive_filename = "terraform_${version}_${_os}_${_arch}.zip"
   archive { "${tmp_dir}/${archive_filename}":
-    ensure       => present,
-    checksum     => $checksum,
+    ensure        => present,
+    checksum      => $checksum,
     checksum_type => $checksum_type,
-    extract      => true,
-    extract_path => $tmp_dir,
-    source       => "${base_url}/${version}/${archive_filename}",
-    creates      => "${target_dir}/${bin_name}-${version}",
+    extract       => true,
+    extract_path  => $tmp_dir,
+    source        => "${base_url}/${version}/${archive_filename}",
+    creates       => "${target_dir}/${bin_name}-${version}",
   }
 
   exec { '/usr/local/bin/terraform-version':
