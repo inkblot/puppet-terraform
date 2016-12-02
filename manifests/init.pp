@@ -36,6 +36,7 @@ class terraform (
 
   exec { '/usr/local/bin/terraform-version':
     command     => "mv ${tmp_dir}/${bin_name} ${target_dir}/${bin_name}-${version}",
+    path        => '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rvm/bin',
     subscribe   => Archive["${tmp_dir}/${archive_filename}"],
     refreshonly => true,
   }
