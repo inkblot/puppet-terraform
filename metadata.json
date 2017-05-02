@@ -1,6 +1,6 @@
 {
   "name": "inkblot/terraform",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "inkblot",
   "license": "Apache-2.0",
   "summary": "terraform by HashiCorp",
@@ -39,6 +39,6 @@
     }
   ],
   "dependencies": [
-    { "name": "puppet/archive" }
+    { "name": "inkblot/hashicorp" }
   ]
 }
